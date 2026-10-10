@@ -1,12 +1,24 @@
 
 import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+
 import { toyService } from '../services/toy.service.js'
+import {
+    SET_TOYS,
+    REMOVE_TOY,
+    ADD_TOY,
+    UPDATE_TOY,
+} from '../store/toy.reducer.js'
+
 import { ToyList } from '../cmps/ToyList.jsx'
 import { ToyEdit } from './ToyEdit.jsx'
 import { ToyFilter } from '../cmps/ToyFilter.jsx'
 
 export function ToyIndex() {
-    const [toys, setToys] = useState(null)
+    const toys = useSelector(state => state.toys)
+    const dispatch = useDispatch()
+
+    const [isLoading, setIsLoading] = useState(true)
     const [filterBy, setFilterBy] = useState({
         name: '',
         inStock: 'all',
@@ -20,15 +32,20 @@ export function ToyIndex() {
 
     function loadToys() {
         toyService.query(filterBy)
-            .then(setToys)
+            .then(toys => {
+                dispatch({ type: SET_TOYS, toys })
+            })
             .catch(err => console.log('Cannot load toys', err))
+            .finally(() => setIsLoading(false))
     }
 
     function onRemoveToy(toyId) {
         if (!confirm('Are you sure you want to delete this toy?')) return
 
         toyService.remove(toyId)
-            .then(() => loadToys())
+            .then(() => {
+                dispatch({ type: REMOVE_TOY, toyId })
+            })
             .catch(err => console.log('Cannot remove toy', err))
     }
 
@@ -37,10 +54,15 @@ export function ToyIndex() {
         setIsEditing(true)
     }
 
-    function onSaveToy() {
+    function onSaveToy(savedToy) {
+        if (selectedToyId) {
+            dispatch({ type: UPDATE_TOY, toy: savedToy })
+        } else {
+            dispatch({ type: ADD_TOY, toy: savedToy })
+        }
+
         setIsEditing(false)
         setSelectedToyId(null)
-        loadToys()
     }
 
     function onCancelEdit() {
@@ -48,7 +70,9 @@ export function ToyIndex() {
         setSelectedToyId(null)
     }
 
-    if (!toys) return <div>Loading...</div>
+    if (isLoading && !toys.length) {
+        return <div>Loading...</div>
+    }
 
     return (
         <section className="toy-index">
