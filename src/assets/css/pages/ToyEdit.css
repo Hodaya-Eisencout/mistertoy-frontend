@@ -1,0 +1,56 @@
+
+.toy-edit {
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #e1e5ee;
+    border-radius: 10px;
+}
+
+.toy-edit h2 {
+    margin-top: 0;
+}
+
+.toy-edit form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.toy-edit form > label {
+    font-weight: bold;
+}
+
+.toy-edit input:not([type="checkbox"]) {
+    width: 100%;
+    max-width: 450px;
+}
+
+.toy-edit fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    padding: 15px;
+    border: 1px solid #ccd4e0;
+    border-radius: 8px;
+}
+
+.toy-edit fieldset legend {
+    font-weight: bold;
+}
+
+.toy-edit fieldset label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.toy-edit button {
+    align-self: flex-start;
+}
+
+@media (max-width: 600px) {
+    .toy-edit {
+        padding: 12px;
+    }
+}

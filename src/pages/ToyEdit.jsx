@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { toyService } from '../services/toy.service.js'
 import { useUnsavedChanges } from '../hooks/useUnsavedChanges.js'
+import '../assets/css/pages/ToyEdit.css'
 
 export function ToyEdit({ toyId, onSaveToy, onCancel }) {
     const [toy, setToy] = useState(toyService.getEmptyToy())

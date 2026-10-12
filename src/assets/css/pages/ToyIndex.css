@@ -1,0 +1,43 @@
+
+.toy-index {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.toy-index h2 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.toy-index > button {
+    align-self: flex-start;
+}
+
+.toy-index .toy-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    padding: 0;
+    list-style: none;
+}
+
+.toy-index .toy-list > li {
+    min-width: 0;
+    padding: 18px;
+    background-color: white;
+    border: 1px solid #e1e5ee;
+    border-radius: 10px;
+}
+
+@media (max-width: 800px) {
+    .toy-index .toy-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 550px) {
+    .toy-index .toy-list {
+        grid-template-columns: 1fr;
+    }
+}

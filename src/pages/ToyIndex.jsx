@@ -13,6 +13,7 @@ import {
 import { ToyList } from '../cmps/ToyList.jsx'
 import { ToyEdit } from './ToyEdit.jsx'
 import { ToyFilter } from '../cmps/ToyFilter.jsx'
+import '../assets/css/pages/ToyIndex.css'
 
 export function ToyIndex() {
     const toys = useSelector(state => state.toys)

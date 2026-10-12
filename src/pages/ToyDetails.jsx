@@ -6,6 +6,8 @@ import { toyService } from '../services/toy.service.js'
 import { NicePopup } from '../cmps/NicePopup.jsx'
 import { Chat } from '../cmps/Chat.jsx'
 
+import '../assets/css/pages/ToyDetails.css'
+
 export function ToyDetails() {
     const [toy, setToy] = useState(null)
     const [isChatOpen, setIsChatOpen] = useState(false)

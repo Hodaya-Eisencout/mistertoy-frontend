@@ -1,5 +1,6 @@
 
 import { useEffect } from 'react'
+import '../assets/css/cmps/NicePopup.css'
 
 export function NicePopup({
     heading,

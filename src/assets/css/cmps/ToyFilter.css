@@ -1,0 +1,55 @@
+
+.toy-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #e1e5ee;
+    border-radius: 10px;
+}
+
+.toy-filter h3 {
+    margin: 0 0 8px;
+}
+
+.toy-filter > label {
+    font-weight: bold;
+}
+
+.toy-filter input,
+.toy-filter select {
+    width: 100%;
+    max-width: 350px;
+}
+
+.toy-filter fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    padding: 15px;
+    border: 1px solid #ccd4e0;
+    border-radius: 8px;
+}
+
+.toy-filter fieldset legend {
+    font-weight: bold;
+}
+
+.toy-filter fieldset label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.toy-filter fieldset input {
+    width: auto;
+}
+
+@media (max-width: 600px) {
+    .toy-filter {
+        padding: 12px;
+    }
+}

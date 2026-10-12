@@ -1,3 +1,4 @@
+import '../assets/css/cmps/ToyPreview.css'
 
 export function ToyPreview({ toy }) {
     return (

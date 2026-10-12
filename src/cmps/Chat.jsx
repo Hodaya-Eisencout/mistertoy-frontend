@@ -1,5 +1,6 @@
 
 import { useEffect, useRef, useState } from 'react'
+import '../assets/css/cmps/Chat.css'
 
 export function Chat() {
     const [msgs, setMsgs] = useState([])

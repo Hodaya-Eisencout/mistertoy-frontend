@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from 'react'
 import { toyService } from '../services/toy.service.js'
+import '../assets/css/cmps/ToyFilter.css'
 
 export function ToyFilter({ onSetFilter }) {
     const [filterBy, setFilterBy] = useState({
