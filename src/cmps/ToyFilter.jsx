@@ -29,16 +29,17 @@ export function ToyFilter({ onSetFilter }) {
         }))
     }
 
-    function handleLabelsChange({ target }) {
-        const selectedLabels = Array.from(
-            target.selectedOptions,
-            option => option.value
-        )
+    function handleLabelChange(label) {
+        setFilterBy(prevFilter => {
+            const updatedLabels = prevFilter.labels.includes(label)
+                ? prevFilter.labels.filter(item => item !== label)
+                : [...prevFilter.labels, label]
 
-        setFilterBy(prevFilter => ({
-            ...prevFilter,
-            labels: selectedLabels,
-        }))
+            return {
+                ...prevFilter,
+                labels: updatedLabels,
+            }
+        })
     }
 
     return (
@@ -66,22 +67,20 @@ export function ToyFilter({ onSetFilter }) {
                 <option value="false">Out of Stock</option>
             </select>
 
-            <label htmlFor="labels">Labels:</label>
+            <fieldset className="labels-filter">
+                <legend>Labels:</legend>
 
-            <select
-                id="labels"
-                multiple
-                size={4}
-                value={filterBy.labels}
-                onChange={handleLabelsChange}
-            >
                 {labels.map(label => (
-                    <option key={label} value={label}>
+                    <label key={label}>
+                        <input
+                            type="checkbox"
+                            checked={filterBy.labels.includes(label)}
+                            onChange={() => handleLabelChange(label)}
+                        />
                         {label}
-                    </option>
+                    </label>
                 ))}
-            </select>
-
+            </fieldset>
 
             <label htmlFor="sortBy">Sort By:</label>
             <select
