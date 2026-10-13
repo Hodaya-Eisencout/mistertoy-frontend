@@ -1,5 +1,5 @@
 
-const STORAGE_KEY = 'toysDB'
+const BASE_URL = 'http://localhost:3030/api/toy/'
 
 export const toyService = {
     query,
@@ -21,86 +21,68 @@ const labels = [
     'Battery Powered',
 ]
 
-_createToys()
-
-
-
 function query(filterBy = {}) {
-    let toys = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []
+    const params = new URLSearchParams()
 
-    if (filterBy.name) {
-        const name = filterBy.name.toLowerCase()
-        toys = toys.filter(toy =>
-            toy.name.toLowerCase().includes(name)
-        )
-    }
+    if (filterBy.name) params.set('txt', filterBy.name)
 
     if (filterBy.inStock && filterBy.inStock !== 'all') {
-        const isInStock = filterBy.inStock === 'true'
-        toys = toys.filter(toy => toy.inStock === isInStock)
+        params.set('inStock', filterBy.inStock)
     }
 
     if (filterBy.labels?.length) {
-        toys = toys.filter(toy =>
-            filterBy.labels.every(label => toy.labels.includes(label))
-        )
+        params.set('labels', filterBy.labels.join(','))
     }
 
-    if (filterBy.sortBy) {
-        toys.sort((toy1, toy2) => {
-            if (filterBy.sortBy === 'name') {
-                return toy1.name.localeCompare(toy2.name)
+    const queryString = params.toString()
+    const url = BASE_URL + (queryString ? '?' + queryString : '')
+
+    return fetch(url)
+        .then(res => _handleResponse(res))
+        .then(toys => {
+            if (filterBy.sortBy) {
+                toys.sort((toy1, toy2) => {
+                    if (filterBy.sortBy === 'name') {
+                        return toy1.name.localeCompare(toy2.name)
+                    }
+
+                    if (filterBy.sortBy === 'price') {
+                        return toy1.price - toy2.price
+                    }
+
+                    if (filterBy.sortBy === 'createdAt') {
+                        return toy1.createdAt - toy2.createdAt
+                    }
+
+                    return 0
+                })
             }
 
-            if (filterBy.sortBy === 'price') {
-                return toy1.price - toy2.price
-            }
-
-            if (filterBy.sortBy === 'createdAt') {
-                return toy1.createdAt - toy2.createdAt
-            }
-
-            return 0
+            return toys
         })
-    }
-
-    return Promise.resolve(toys)
 }
 
 function getById(toyId) {
-    return query()
-        .then(toys => toys.find(toy => toy._id === toyId))
+    return fetch(BASE_URL + toyId)
+        .then(res => _handleResponse(res))
 }
 
 function save(toy) {
-    return query()
-        .then(toys => {
-            const toyToSave = { ...toy }
+    const method = toy._id ? 'PUT' : 'POST'
 
-            if (toyToSave._id) {
-                const idx = toys.findIndex(currToy => currToy._id === toyToSave._id)
-                if (idx === -1) throw new Error('Toy not found')
-                toys[idx] = toyToSave
-            } else {
-                toyToSave._id = 't' + Date.now()
-                toyToSave.createdAt = Date.now()
-                toys.push(toyToSave)
-            }
-
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(toys))
-            return toyToSave
-        })
+    return fetch(BASE_URL, {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(toy),
+    }).then(res => _handleResponse(res))
 }
 
 function remove(toyId) {
-    return query()
-        .then(toys => {
-            const idx = toys.findIndex(toy => toy._id === toyId)
-            if (idx === -1) throw new Error('Toy not found')
-
-            toys.splice(idx, 1)
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(toys))
-        })
+    return fetch(BASE_URL + toyId, {
+        method: 'DELETE',
+    }).then(res => _handleResponse(res))
 }
 
 function getEmptyToy() {
@@ -118,38 +100,10 @@ function getLabels() {
     return labels
 }
 
-function _createToys() {
-    if (localStorage.getItem(STORAGE_KEY)) return
+function _handleResponse(res) {
+    if (!res.ok) {
+        throw new Error(`Request failed: ${res.status}`)
+    }
 
-    const toys = [
-        {
-            _id: 't101',
-            name: 'Talking Doll',
-            imgUrl: '',
-            price: 123,
-            labels: ['Doll', 'Battery Powered', 'Baby'],
-            createdAt: Date.now(),
-            inStock: true,
-        },
-        {
-            _id: 't102',
-            name: 'Puzzle',
-            imgUrl: '',
-            price: 85,
-            labels: ['Puzzle', 'Box game'],
-            createdAt: Date.now(),
-            inStock: true,
-        },
-        {
-            _id: 't103',
-            name: 'Toy Car',
-            imgUrl: '',
-            price: 59,
-            labels: ['On wheels'],
-            createdAt: Date.now(),
-            inStock: false,
-        },
-    ]
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(toys))
+    return res.json().catch(() => null)
 }
